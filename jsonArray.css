@@ -106,22 +106,16 @@ h1 {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: green;
+  background-color: #d194a9;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 20px;
 }
 
-.sidebar .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
 .openbtn {
   font-size: 20px;
+  color: #fff;
+  background-color: #333;
   cursor: pointer;
 }
 
