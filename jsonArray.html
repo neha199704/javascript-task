@@ -15,9 +15,20 @@
 
   <body>
     <h1>Product List</h1>
+
+    <div id="main">
+      <button class="openbtn" onclick="openNav()">☰ Open Wishlist</button>
+      <button class="openbtn" onclick="closeNav()">Hide Wishlist</button>
+    </div>
+
+    <div id="mySidebar" class="sidebar">
+      <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a> -->
+    </div>
+
     <input type="search" placeholder="Search for product" id="input-search" />
-    <button id="btn" onclick="search()">Search</button>
+    <button id="btn">Search</button>
     <ul id="ul-list"></ul>
+
     <script src="jsonArray.js"></script>
   </body>
 </html>
