@@ -101,11 +101,11 @@ h1 {
 
 .sidebar {
   height: 100%;
-  width: 0;
+  width: 380px;
   position: fixed;
   z-index: 1;
   top: 0;
-  left: 0;
+  left: -380px;
   background-color: #d194a9;
   overflow-x: hidden;
   transition: 0.5s;

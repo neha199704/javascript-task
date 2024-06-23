@@ -25,13 +25,13 @@ function search() {
 }
 
 function openNav() {
-  document.getElementById("mySidebar").style.width = "350px";
-  document.getElementById("main").style.transform = "translateX(-250px)";
+  document.getElementById("mySidebar").style.left = "0";
+  // document.getElementById("main").style.left = "300px";
 }
 
 function closeNav() {
-  document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("main").style.transform = "";
+  document.getElementById("mySidebar").style.left = "-380px";
+  // document.getElementById("main").style.left = "-300px";
 }
 
 function displayWishlist() {
@@ -77,7 +77,7 @@ function wishList(item) {
   favourites.push(item);
   localStorage.setItem("favourites", JSON.stringify(favourites));
 
-  displayWishlist(); // Update the wishlist display
+  displayWishlist();
 }
 
 const url = "https://fakestoreapi.com/products";
