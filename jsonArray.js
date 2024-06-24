@@ -3,6 +3,7 @@ console.log("hello");
 let btn = document.getElementById("btn");
 let ulList = document.getElementById("ul-list");
 let mySidebar = document.getElementById("mySidebar");
+let myCart = document.getElementById("myCart");
 
 let result = [];
 document.getElementById("input-search").addEventListener("input", search);
@@ -22,6 +23,14 @@ function search() {
 
   console.log(result, "result");
   console.log(searching);
+}
+
+function openCart() {
+  document.getElementById("myCart").style.right = "0";
+  // document.getElementById("main").style.left = "300px";
+}
+function closeCart() {
+  document.getElementById("myCart").style.right = "-500px";
 }
 
 function openNav() {
@@ -55,29 +64,108 @@ function displayWishlist() {
     para3.innerText = `Ratings ${item.rating.rate} 
      Rs. ${item.price}`;
 
-    // const deleteBtn = document.createElement("button");
-    // deleteBtn.innerText = "Delete";
-    // deleteBtn.className = "deletebtn";
-
-    // deleteBtn.addEventListener("click", function () {
-    //   mySidebar.removeChild(wishListDiv);
-    // });
-
     wishListDiv.appendChild(h2Elem1);
     wishListDiv.appendChild(imgElem1);
     wishListDiv.appendChild(para2);
     wishListDiv.appendChild(para3);
-    //mySidebar.appendChild(deleteBtn);
+
     mySidebar.appendChild(wishListDiv);
   });
 }
 
-function wishList(item) {
-  let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
-  favourites.push(item);
-  localStorage.setItem("favourites", JSON.stringify(favourites));
+function displayCart() {
+  myCart.innerHTML = "";
 
+  let buy = JSON.parse(localStorage.getItem("buy")) || [],
+    totalAmount = 0;
+
+  buy.forEach((item) => {
+    let cartItemDiv = document.createElement("div");
+    cartItemDiv.classList.add("cartItemDiv");
+
+    const h2Elem1 = document.createElement("h2");
+    const imgElem1 = document.createElement("img");
+    const para3 = document.createElement("p");
+
+    const quantityDiv = document.createElement("div");
+
+    h2Elem1.innerText = item.title;
+    imgElem1.src = item.image;
+    imgElem1.classList.add("img");
+    imgElem1.style.width = "200px";
+
+    para3.innerText = `Rs. ${item.price}`;
+
+    // let total = document.createElement("p");
+    // total.innerHTML = totalAmount + item.price;
+
+    quantityDiv.innerHTML = `
+      <button class="decrease" >-</button>
+      <span>${item.quantity}</span>
+      <button class="increase" ">+</button>
+    `;
+    quantityDiv.classList.add("quantityDiv");
+
+    cartItemDiv.appendChild(h2Elem1);
+    cartItemDiv.appendChild(imgElem1);
+    cartItemDiv.appendChild(quantityDiv);
+    cartItemDiv.appendChild(para3);
+    //cartItemDiv.appendChild(total);
+    myCart.appendChild(cartItemDiv);
+    totalAmount += item.price * item.quantity;
+    //totalAmount += item.price;
+    console.log(totalAmount, "in function");
+  });
+
+  console.log(totalAmount, "ouside function");
+  let calculate = document.createElement("div");
+  calculate.classList.add("calculate");
+  let total = document.createElement("p");
+  let h2 = document.createElement("h2");
+  let p = document.createElement("p");
+
+  h2.innerText = "Price detail";
+  // p.innerText = `No.of items : ${buy.length}`;
+  totalAmount = parseFloat(totalAmount).toFixed(2);
+  total.innerHTML = `Total amount to paid :  ${totalAmount} `;
+  calculate.innerHTML = "<hr>";
+
+  calculate.appendChild(h2);
+  calculate.appendChild(p);
+  calculate.appendChild(total);
+  myCart.appendChild(calculate);
+
+  // let decrease = document.getElementsByClassName(".decrease");
+  // decrease.addEventListener("click", () => {
+  //   item.quantity - 1;
+  // });
+}
+
+function wishList(item, removeFavourites) {
+  let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+  if (removeFavourites === "add") {
+    favourites.push(item);
+  } else if (removeFavourites === "remove") {
+    favourites = favourites.filter((fav) => fav.id !== item.id);
+  }
+  localStorage.setItem("favourites", JSON.stringify(favourites));
   displayWishlist();
+}
+
+function cart(item) {
+  let buy = JSON.parse(localStorage.getItem("buy")) || [];
+
+  let existingItem = buy.find((buyItem) => buyItem.id === item.id);
+
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    item.quantity = 1;
+    buy.push(item);
+  }
+  localStorage.setItem("buy", JSON.stringify(buy));
+
+  displayCart();
 }
 
 const url = "https://fakestoreapi.com/products";
@@ -91,6 +179,9 @@ const products = async () => {
 
 function sendData(data) {
   ulList.innerHTML = "";
+  let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+  let buy = JSON.parse(localStorage.getItem("buy")) || [];
+
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
 
@@ -100,6 +191,7 @@ function sendData(data) {
     const para = document.createElement("p");
     const para1 = document.createElement("p");
     const icon = document.createElement("span");
+    const iconCart = document.createElement("span");
 
     h2Elem.innerText = item.title;
     imgElem.src = item.image;
@@ -109,8 +201,35 @@ function sendData(data) {
     icon.classList.add("icon");
     icon.dataset.id = item.id;
 
+    if (favourites.find((fav) => fav.id === item.id)) {
+      icon.style.color = "red";
+    } else {
+      icon.style.color = "white";
+    }
+
     icon.addEventListener("click", () => {
-      wishList(item);
+      if (icon.style.color === "white") {
+        icon.style.color = "red";
+        wishList(item, "add");
+      } else {
+        icon.style.color = "white";
+        wishList(item, "remove");
+      }
+    });
+
+    iconCart.innerHTML = "Add to Cart";
+    iconCart.classList.add("iconCart");
+    iconCart.dataset.id = item.id;
+
+    if (buy.find((cartItem) => cartItem.id === item.id)) {
+      iconCart.innerText = "Added to cart";
+      iconCart.style.color = "green";
+    }
+
+    iconCart.addEventListener("click", () => {
+      iconCart.innerText = "Added to cart";
+      iconCart.style.color = "green";
+      cart(item);
     });
 
     para1.innerText = data[i].description;
@@ -122,10 +241,11 @@ function sendData(data) {
     divElem.appendChild(para1);
     divElem.appendChild(para);
     divElem.appendChild(icon);
-
+    divElem.appendChild(iconCart);
     ulList.appendChild(divElem);
   }
 }
 
 products();
 displayWishlist();
+displayCart();
