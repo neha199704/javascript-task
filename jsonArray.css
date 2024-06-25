@@ -110,6 +110,7 @@ h1 {
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 20px;
+  text-align: center;
 }
 
 .openbtn {
@@ -140,6 +141,7 @@ h1 {
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 20px;
+  text-align: center;
 }
 
 .iconCart {

@@ -72,6 +72,7 @@ function displayWishlist() {
     mySidebar.appendChild(wishListDiv);
   });
 }
+
 function darkMode() {
   let element = document.body;
   element.classList.toggle("dark-mode");
@@ -104,9 +105,9 @@ function displayCart() {
     // total.innerHTML = totalAmount + item.price;
 
     quantityDiv.innerHTML = `
-      <button class="decrease" >-</button>
+      <button class="decrease" data-id="${item.id}">-</button>
       <span>${item.quantity}</span>
-      <button class="increase" ">+</button>
+      <button class="increase" data-id="${item.id}">+</button>
     `;
     quantityDiv.classList.add("quantityDiv");
 
@@ -129,9 +130,9 @@ function displayCart() {
   let p = document.createElement("p");
 
   h2.innerText = "Price detail";
-  // p.innerText = `No.of items : ${buy.length}`;
   totalAmount = parseFloat(totalAmount).toFixed(2);
   total.innerHTML = `Total amount to paid :  ${totalAmount} `;
+
   calculate.innerHTML = "<hr>";
 
   calculate.appendChild(h2);
@@ -139,10 +140,34 @@ function displayCart() {
   calculate.appendChild(total);
   myCart.appendChild(calculate);
 
-  // let decrease = document.getElementsByClassName(".decrease");
-  // decrease.addEventListener("click", () => {
-  //   item.quantity - 1;
-  // });
+  document.querySelectorAll(".decrease").forEach((button) => {
+    button.addEventListener("click", (e) =>
+      updateQuantity(e.target.dataset.id, "decrease")
+    );
+  });
+  document.querySelectorAll(".increase").forEach((button) => {
+    button.addEventListener("click", (e) =>
+      updateQuantity(e.target.dataset.id, "increase")
+    );
+  });
+}
+
+function updateQuantity(id, action) {
+  let buy = JSON.parse(localStorage.getItem("buy")) || [];
+  let item = buy.find((buyItem) => buyItem.id === parseInt(id));
+
+  if (item) {
+    if (action === "increase") {
+      item.quantity++;
+    } else if (action === "decrease" && item.quantity > 1) {
+      item.quantity--;
+    } else if (action === "decrease" && item.quantity === 1) {
+      buy = buy.filter((buyItem) => buyItem.id !== parseInt(id));
+    }
+  }
+
+  localStorage.setItem("buy", JSON.stringify(buy));
+  displayCart();
 }
 
 function wishList(item, removeFavourites) {
